@@ -5,6 +5,7 @@ local awful         = require("awful")
 -- Widget and layout libraries
 local wibox         = require("wibox")
 local vicious       = require("vicious")
+local redflat       = require("redflat")
 
 -- Theme handling library
 local beautiful     = require("beautiful")
@@ -127,7 +128,12 @@ mykeyboardlayout = awful.widget.keyboardlayout()
 
 -- {{{ Wibar
 -- Create a textclock widget
-mytextclock = wibox.widget.textclock()
+-- mytextclock = wibox.widget.textclock()
+
+local separator = redflat.gauge.separator.vertical()
+
+mytextclock = {}
+mytextclock.widget = redflat.widget.textclock({ timeformat = "%a %m/%d %H:%M ", dateformat = "%a %b %d %Y => %D" })
 
 -- mybattery = battery(
 --   {
@@ -149,23 +155,34 @@ mytextclock = wibox.widget.textclock()
 
 -- mybattery = vicious.widgets.bat("BAT0", function(state, level, rem, wear, watts) return string. end)
 batwidget = wibox.widget.textbox()
-vicious.register(batwidget, vicious.widgets.bat, ' bat: $1 $2% $3 left <span color="#cccccc"> | </span>', 61, 'BAT0')
+vicious.register(batwidget, vicious.widgets.bat, '<span color="#c6b78e"> bat: </span><span color="#b53636">$1</span> <span color="#CC9933">$2%</span> <span color="#7F9F7F">$3 left</span> | ', 31, 'BAT0')
+
+uptimewidget = wibox.widget.textbox()
+uptimewidget.width, uptimewidget.align = 50, "right"
+vicious.register(uptimewidget, vicious.widgets.uptime, ' | <span color="#c6b78e">up:</span> $1 $2:$3 | ', 61)
 
 -- cpu widget
 cpuwidget = wibox.widget.textbox()
-vicious.register(cpuwidget, vicious.widgets.cpu, 'cpu: $2% : $3% : $4% : $5%<span color="#cccccc"> | </span>')
+vicious.register(cpuwidget, vicious.widgets.cpu, '<span color="#c6b78e">cpu:</span> $2% : $3% : $4% : $5%<span color="#cccccc"> | </span>')
+
+-- cpu_graph = awful.widget.graph()
+-- cpu_graph:set_width(50)
+-- cpu_graph:set_background_color"#494B4F"
+-- cpu_graph:set_color{type = "linear", from = {0, 0}, to = {50, 0},
+--                     stops = {{0, "#FF5656"}, {0.5, "#88A175"}, {1, "#AECF96"}}}
+-- vicious.register(cpu_graph, vicious.widgets.cpu, "$1", 3)
 
 -- ram widget
 memwidget = wibox.widget.textbox()
-vicious.register(memwidget, vicious.widgets.mem, 'mem: $3mb used: $2mb free: $4mb swap: $6mb<span color="#cccccc"> | </span>', 13)
+vicious.register(memwidget, vicious.widgets.mem, '<span color="#c6b78e">mem:</span> $3mb <span color="#CC9933">used: $2mb</span> <span color="#7F9F7F">free: $4mb</span> <span color="#b53636">swap: $6mb</span> | ', 13)
 
 -- wifi widget
 wifiwidget = wibox.widget.textbox()
-vicious.register(wifiwidget, vicious.widgets.wifi, ' <span color="#7F9F7F">${ssid}</span>@<span color="#7F9F7F">${linp}%</span> <span color="#cccccc"> | </span>', 2, "wlp3s0")
+vicious.register(wifiwidget, vicious.widgets.wifi, ' <span color="#b53636">${ssid}</span> : <span color="#CC9933">${rate} mb/s</span> : <span color="#7F9F7F">${linp}%</span> : <span color="#CC9933">${sign} dBm</span> : ', 26, "wlp3s0")
 
 -- network widget
 netwidget = wibox.widget.textbox()
-vicious.register(netwidget, vicious.widgets.net, '<span color="#CC9933">down: ${wlp3s0 down_kb} kB/s</span> <span color="#7F9F7F"> up: ${wlp3s0 up_kb} kB/s</span><span color="#cccccc"> | </span>', 3)
+vicious.register(netwidget, vicious.widgets.net, '<span color="#7F9F7F">v ${wlp3s0 down_kb} kB/s</span> <span color="#CC9933"> ^ ${wlp3s0 up_kb} kB/s</span>', 3)
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = awful.util.table.join(
@@ -269,6 +286,7 @@ awful.screen.connect_for_each_screen(function(s)
         },
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
+            uptimewidget,
             cpuwidget,
             memwidget,
             batwidget,
