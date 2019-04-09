@@ -2,15 +2,20 @@
 local gears         = require("gears")
 local awful         = require("awful")
                       require("awful.autofocus")
--- Widget and layout library
+-- Widget and layout libraries
 local wibox         = require("wibox")
+local vicious       = require("vicious")
+
 -- Theme handling library
 local beautiful     = require("beautiful")
+
 -- Notification library
 local naughty       = require("naughty")
+
 local menubar       = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
 -- local battery       = require("awesome-upower-battery")
+local string        = { format = string.format }
 
 -- Load Debian menu entries
 require("debian.menu")
@@ -142,6 +147,26 @@ mytextclock = wibox.widget.textclock()
 --   }
 -- )
 
+-- mybattery = vicious.widgets.bat("BAT0", function(state, level, rem, wear, watts) return string. end)
+batwidget = wibox.widget.textbox()
+vicious.register(batwidget, vicious.widgets.bat, ' Bat: $1 $2% $3 left <span color="#cccccc"> | </span>', 61, 'BAT0')
+
+-- cpu widget
+cpuwidget = wibox.widget.textbox()
+vicious.register(cpuwidget, vicious.widgets.cpu, 'cpu: $1%<span color="#cccccc"> | </span>')
+
+-- ram widget
+memwidget = wibox.widget.textbox()
+vicious.register(memwidget, vicious.widgets.mem, 'mem: $1%<span color="#cccccc"> | </span>', 13)
+
+-- wifi widget
+wifiwidget = wibox.widget.textbox()
+vicious.register(wifiwidget, vicious.widgets.wifi, ' <span color="#7F9F7F">${ssid}</span>@<span color="#7F9F7F">${linp}%</span> ', 2, "wlp2s0")
+
+-- network widget
+netwidget = wibox.widget.textbox()
+vicious.register(netwidget, vicious.widgets.net, '<span color="#CC9933">down: ${wlp2s0 down_kb} kB/s</span> <span color="#7F9F7F"> up: ${wlp2s0 up_kb} kB/s</span><span color="#cccccc"> | </span>', 3)
+
 -- Create a wibox for each screen and add it
 local taglist_buttons = awful.util.table.join(
                     awful.button({ }, 1, function(t) t:view_only() end),
@@ -236,12 +261,16 @@ awful.screen.connect_for_each_screen(function(s)
             s.mytaglist,
             s.mypromptbox,
         },
-        s.mytasklist, -- Middle widget
+        -- s.mytasklist, -- Middle widget
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
             mykeyboardlayout,
             wibox.widget.systray(),
-            mybattery,
+            batwidget,
+            cpuwidget,
+            memwidget,
+            wifiwidget,
+            netwidget,
             mytextclock,
             s.mylayoutbox,
         },
