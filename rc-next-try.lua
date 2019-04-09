@@ -149,23 +149,23 @@ mytextclock = wibox.widget.textclock()
 
 -- mybattery = vicious.widgets.bat("BAT0", function(state, level, rem, wear, watts) return string. end)
 batwidget = wibox.widget.textbox()
-vicious.register(batwidget, vicious.widgets.bat, ' Bat: $1 $2% $3 left <span color="#cccccc"> | </span>', 61, 'BAT0')
+vicious.register(batwidget, vicious.widgets.bat, ' bat: $1 $2% $3 left <span color="#cccccc"> | </span>', 61, 'BAT0')
 
 -- cpu widget
 cpuwidget = wibox.widget.textbox()
-vicious.register(cpuwidget, vicious.widgets.cpu, 'cpu: $1%<span color="#cccccc"> | </span>')
+vicious.register(cpuwidget, vicious.widgets.cpu, 'cpu: $2% : $3% : $4% : $5%<span color="#cccccc"> | </span>')
 
 -- ram widget
 memwidget = wibox.widget.textbox()
-vicious.register(memwidget, vicious.widgets.mem, 'mem: $1%<span color="#cccccc"> | </span>', 13)
+vicious.register(memwidget, vicious.widgets.mem, 'mem: $3mb used: $2mb free: $4mb swap: $6mb<span color="#cccccc"> | </span>', 13)
 
 -- wifi widget
 wifiwidget = wibox.widget.textbox()
-vicious.register(wifiwidget, vicious.widgets.wifi, ' <span color="#7F9F7F">${ssid}</span>@<span color="#7F9F7F">${linp}%</span> ', 2, "wlp2s0")
+vicious.register(wifiwidget, vicious.widgets.wifi, ' <span color="#7F9F7F">${ssid}</span>@<span color="#7F9F7F">${linp}%</span> <span color="#cccccc"> | </span>', 2, "wlp3s0")
 
 -- network widget
 netwidget = wibox.widget.textbox()
-vicious.register(netwidget, vicious.widgets.net, '<span color="#CC9933">down: ${wlp2s0 down_kb} kB/s</span> <span color="#7F9F7F"> up: ${wlp2s0 up_kb} kB/s</span><span color="#cccccc"> | </span>', 3)
+vicious.register(netwidget, vicious.widgets.net, '<span color="#CC9933">down: ${wlp3s0 down_kb} kB/s</span> <span color="#7F9F7F"> up: ${wlp3s0 up_kb} kB/s</span><span color="#cccccc"> | </span>', 3)
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = awful.util.table.join(
@@ -262,15 +262,17 @@ awful.screen.connect_for_each_screen(function(s)
             s.mypromptbox,
         },
         -- s.mytasklist, -- Middle widget
+        {
+          layout = wibox.layout.fixed.horizontal,
+          wifiwidget,
+          netwidget,
+        },
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-            mykeyboardlayout,
-            wibox.widget.systray(),
-            batwidget,
             cpuwidget,
             memwidget,
-            wifiwidget,
-            netwidget,
+            batwidget,
+            wibox.widget.systray(),
             mytextclock,
             s.mylayoutbox,
         },
