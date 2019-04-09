@@ -124,16 +124,16 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 -- }}}
 
 -- Keyboard map indicator and switcher
-mykeyboardlayout = awful.widget.keyboardlayout()
+-- mykeyboardlayout = awful.widget.keyboardlayout()
 
 -- {{{ Wibar
 -- Create a textclock widget
--- mytextclock = wibox.widget.textclock()
+mytextclock = wibox.widget.textclock()
 
-local separator = redflat.gauge.separator.vertical()
+-- local separator = redflat.gauge.separator.vertical()
 
-mytextclock = {}
-mytextclock.widget = redflat.widget.textclock({ timeformat = "%a %m/%d %H:%M ", dateformat = "%a %b %d %Y => %D" })
+-- mytextclock = {}
+-- mytextclock.widget = redflat.widget.textclock({ timeformat = "%a %m/%d %H:%M ", dateformat = "%a %b %d %Y => %D" })
 
 -- mybattery = battery(
 --   {
@@ -154,8 +154,17 @@ mytextclock.widget = redflat.widget.textclock({ timeformat = "%a %m/%d %H:%M ", 
 -- )
 
 -- mybattery = vicious.widgets.bat("BAT0", function(state, level, rem, wear, watts) return string. end)
+
 batwidget = wibox.widget.textbox()
 vicious.register(batwidget, vicious.widgets.bat, '<span color="#c6b78e"> bat: </span><span color="#b53636">$1</span> <span color="#CC9933">$2%</span> <span color="#7F9F7F">$3 left</span> | ', 31, 'BAT0')
+
+-- local sysmon = { widget = {}, buttons = {}, icon = {} }
+-- sysmon.icon.battery = redflat.util.table.check(beautiful, "icon.widget.battery")
+
+-- sysmon.widget.battery = redflat.widget.sysmon(
+--   { func = redflat.system.pformatted.bat(25), arg = "BAT0" },
+--   { timeout = 60, widget = redflat.gauge.icon.single, monitor = { is_vertical = true, icon = sysmon.icon.battery } }
+-- )
 
 uptimewidget = wibox.widget.textbox()
 uptimewidget.width, uptimewidget.align = 50, "right"
@@ -174,7 +183,7 @@ vicious.register(cpuwidget, vicious.widgets.cpu, '<span color="#c6b78e">cpu:</sp
 
 -- ram widget
 memwidget = wibox.widget.textbox()
-vicious.register(memwidget, vicious.widgets.mem, '<span color="#c6b78e">mem:</span> $3mb <span color="#CC9933">used: $2mb</span> <span color="#7F9F7F">free: $4mb</span> <span color="#b53636">swap: $6mb</span> | ', 13)
+vicious.register(memwidget, vicious.widgets.mem, '<span color="#CC9933">used: $2mb</span> <span color="#7F9F7F">free: $4mb</span> <span color="#b53636">swap: $6mb</span> | ', 13)
 
 -- wifi widget
 wifiwidget = wibox.widget.textbox()
@@ -286,11 +295,9 @@ awful.screen.connect_for_each_screen(function(s)
         },
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-            uptimewidget,
             cpuwidget,
             memwidget,
             batwidget,
-            wibox.widget.systray(),
             mytextclock,
             s.mylayoutbox,
         },
