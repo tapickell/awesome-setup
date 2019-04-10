@@ -267,8 +267,18 @@ end
 local function pop_err(err, exr, excode, data)
   if err then
     naughty.notify({ preset = naughty.config.presets.critical,
-                    title = "DEBUG DATA: " .. tostring(data),
+                    title = tostring(data),
                     text = tostring(err) .. " :: " .. tostring(exr) .. " => "  .. tostring(excode)})
+  end
+end
+
+local function pop_debug(data, err, ex, ec)
+  if ec == 1 then
+    pop_err(err, ex, ec, "ERROR: " .. data)
+  else
+    naughty.notify({ preset = naughty.config.presets.info,
+                    title = "DATA: " .. tostring(data),
+                    text = tostring(err) .. " :: " .. tostring(ex) .. " => "  .. tostring(ec)})
   end
 end
 
@@ -276,10 +286,8 @@ local function backlight_brightness_inc()
   get_brightness(function (brightness, err, exr, excode)
       local level = tonumber(brightness)
       local next_level = level + 100
-      pop_err(err, exr, excode, level .. " :: " .. next_level)
       if (next_level <= max_brightness) then
-        pop_err(err, exr, excode, "INSIDE IF ON UP => " .. next_level)
-        awful.spawn.easy_async("~/bin/brightup.sh", false)
+        awful.spawn.easy_async("zsh /home/todd/bin/brightup.sh", pop_debug)
       else
         pop_err("Level " .. next_level .. " is not <= " .. max_brightness, "", 1, next_level)
       end
@@ -290,11 +298,8 @@ local function backlight_brightness_dec()
   get_brightness(function (brightness, err, exr, excode)
       local level = tonumber(brightness)
       local next_level = level - 100
-      pop_err(err, exr, excode, level .. " :: " .. next_level)
       if (next_level >= min_brightness) then
-        awful.util.spawn("~/bin/brightdown.sh", function(data, err, exr, excode)
-          pop_err(err, exr, excode, data)
-        end)
+        awful.util.easy_async("zsh /home/todd/bin/brightdown.sh", pop_debug)
       else
         pop_err("Level " .. next_level .. " is not >= " .. min_brightness, "", 1, next_level)
       end
@@ -373,8 +378,10 @@ globalkeys = awful.util.table.join(
     awful.key({ }, "XF86AudioLowerVolume", function () awful.util.spawn("amixer set Master 2%-", false) end),
     awful.key({ }, "XF86AudioMute", function () awful.util.spawn("amixer set Master toggle", false) end),
     awful.key({ }, "XF86AudioMicMute", function () awful.util.spawn("amixer set Capture toggle", false) end),
-    awful.key({ }, "XF86MonBrightnessUp", backlight_brightness_inc),
-    awful.key({ }, "XF86MonBrightnessDown", backlight_brightness_dec),
+    --awful.key({ }, "XF86MonBrightnessUp", backlight_brightness_inc),
+    --awful.key({ }, "XF86MonBrightnessDown", backlight_brightness_dec),
+    awful.key({ }, "XF86MonBrightnessUp", function () awful.util.spawn("/home/todd/bin/brightup.sh", false) end),
+    awful.key({ }, "XF86MonBrightnessDown", function () awful.util.spawn ("/home/todd/bin/brightdown.sh", false) end),
     awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
               {description="show help", group="awesome"}),
     awful.key({ modkey,           }, "Left",   awful.tag.viewprev,
