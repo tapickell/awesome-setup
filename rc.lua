@@ -116,8 +116,18 @@ mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesom
                                   }
                         })
 
-mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
+--mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
+--                                     menu = mymainmenu })
+--mylauncher = awful.widget.launcher({ image = '/home/todd/bin/hexagonal-debian.png',
+--                                     menu = mymainmenu })
+--mylauncher = awful.widget.launcher({ image = '/home/todd/bin/square-white-debian.png',
+--                                     menu = mymainmenu })
+mylauncher = awful.widget.launcher({ image = '/home/todd/bin/square-red-debian.png',
                                      menu = mymainmenu })
+--mylauncher = awful.widget.launcher({ image = '/home/todd/bin/tux-icon.png',
+--                                     menu = mymainmenu })
+--mylauncher = awful.widget.launcher({ image = '/home/todd/bin/pc-mc.ico',
+--                                     menu = mymainmenu })
 
 -- Menubar configuration
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
@@ -672,8 +682,8 @@ client.connect_signal("request::titlebars", function(c)
         { -- Right
             awful.titlebar.widget.floatingbutton (c),
             awful.titlebar.widget.maximizedbutton(c),
-            awful.titlebar.widget.stickybutton   (c),
-            awful.titlebar.widget.ontopbutton    (c),
+            --awful.titlebar.widget.stickybutton   (c),
+            --awful.titlebar.widget.ontopbutton    (c),
             awful.titlebar.widget.closebutton    (c),
             layout = wibox.layout.fixed.horizontal()
         },
