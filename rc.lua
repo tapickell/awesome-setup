@@ -51,12 +51,13 @@ end
 beautiful.init(awful.util.get_themes_dir() .. "default/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-terminal = "konsole"
+terminal = "alacritty"
 editor = os.getenv("EDITOR") or "nvim"
 editor_cmd = terminal .. " -e " .. editor
-max_tags = 5
-tags = {"1", "2", "3", "4", "5"}
+max_tags = 6
+tags = {"1", "2", "3", "4", "5", "6"}
 
+awful.util.spawn_with_shell("~/.config/awesome/autorun.sh", false)
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
 -- If you do not like this or do not have such a key,
@@ -66,19 +67,19 @@ modkey = "Mod4"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = {
-    awful.layout.suit.floating,
-    awful.layout.suit.tile,
-    awful.layout.suit.tile.left,
-    awful.layout.suit.tile.bottom,
-    awful.layout.suit.tile.top,
     awful.layout.suit.fair,
-    awful.layout.suit.fair.horizontal,
-    awful.layout.suit.spiral,
-    awful.layout.suit.spiral.dwindle,
+    awful.layout.suit.tile.right,
     awful.layout.suit.max,
     awful.layout.suit.max.fullscreen,
+    awful.layout.suit.spiral,
+    awful.layout.suit.tile.bottom,
+    awful.layout.suit.tile.top,
+    awful.layout.suit.spiral.dwindle,
+    awful.layout.suit.fair.horizontal,
     awful.layout.suit.magnifier,
     awful.layout.suit.corner.nw,
+    awful.layout.suit.floating,
+    awful.layout.suit.tile,
     -- awful.layout.suit.corner.ne,
     -- awful.layout.suit.corner.sw,
     -- awful.layout.suit.corner.se,
@@ -165,8 +166,11 @@ mytextclock = wibox.widget.textclock()
 
 -- mybattery = vicious.widgets.bat("BAT0", function(state, level, rem, wear, watts) return string. end)
 
-batwidget = wibox.widget.textbox()
-vicious.register(batwidget, vicious.widgets.bat, '<span color="#c6b78e"> bat: </span><span color="#b53636">$1</span> <span color="#CC9933">$2%</span> <span color="#7F9F7F">$3 left</span> | ', 31, 'BAT0')
+batwidget0 = wibox.widget.textbox()
+vicious.register(batwidget0, vicious.widgets.bat, '<span color="#c6b78e"> BAT0: </span><span color="#b53636">$1</span> <span color="#CC9933">$2%</span> <span color="#7F9F7F">$3 left</span> | ', 31, 'BAT0')
+
+batwidget1 = wibox.widget.textbox()
+vicious.register(batwidget1, vicious.widgets.bat, '<span color="#c6b78e"> BAT1: </span><span color="#b53636">$1</span> <span color="#CC9933">$2%</span> <span color="#7F9F7F">$3 left</span> | ', 31, 'BAT1')
 
 -- local sysmon = { widget = {}, buttons = {}, icon = {} }
 -- sysmon.icon.battery = redflat.util.table.check(beautiful, "icon.widget.battery")
@@ -190,7 +194,7 @@ vicious.register(volumewidget, vicious.widgets.volume,
 
 -- cpu widget
 cpuwidget = wibox.widget.textbox()
-vicious.register(cpuwidget, vicious.widgets.cpu, '<span color="#c6b78e">cpu:</span> $2% : $3% : $4% : $5%<span color="#cccccc"> | </span>')
+vicious.register(cpuwidget, vicious.widgets.cpu, '<span color="#c6b78e">cpu:</span> $2 : $3 : $4 : $5<span color="#cccccc"> | </span>')
 
 -- cpu_graph = awful.widget.graph()
 -- cpu_graph:set_width(50)
@@ -366,7 +370,8 @@ awful.screen.connect_for_each_screen(function(s)
             -- volumewidget,
             cpuwidget,
             memwidget,
-            batwidget,
+            batwidget0,
+            batwidget1,
             mytextclock,
             s.mylayoutbox,
         },
